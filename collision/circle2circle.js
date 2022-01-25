@@ -4,12 +4,12 @@ import { getDistance2Point } from "../vector.js";
 
 /**
  *
- * @param {number} x1
- * @param {number} y1
- * @param {number} r1
- * @param {number} x2
- * @param {number} y2
- * @param {number} r2
+ * @param {number} x1 center x coordinate circle 1
+ * @param {number} y1 center y coordinate circle 1
+ * @param {number} r1 circle 1 radius
+ * @param {number} x2 center x coordinate circle 2
+ * @param {number} y2 center y coordinate circle 2
+ * @param {number} r2 circle 2 radius
  *
  */
 export const is2CircleCollide = (x1, y1, r1, x2, y2, r2) => {

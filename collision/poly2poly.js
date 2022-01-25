@@ -136,7 +136,7 @@ export const getBboxPolygon = (polygon) => {
  *
  * @param {tPoint[]} axises
  */
-const filterAxis = (axises) => {
+export const filterAxis = (axises) => {
   let loopedObj = {};
   let usedAxises = [];
   /** @param {tPoint} axis */

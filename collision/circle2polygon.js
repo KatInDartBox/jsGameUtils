@@ -1,7 +1,6 @@
-import { getUnit, getDistance2Point, dot2Vector } from "../vector.js";
-import { getBboxPolygon, getPolygonProjection } from "./poly2poly.js";
+import { dot2Vector } from "../vector.js";
 import { is2RectCollide } from "./rect2rect.js";
-
+import { getBboxPolygon, filterAxis, getNormUnits, getPolygonProjection } from "./poly2poly.js";
 /** @typedef {{x:number,y:number} tPoint} */
 /** @typedef {{x:number,y:number} tVector} */
 /** @typedef {tPoint[]} tPolygon */
@@ -9,27 +8,26 @@ import { is2RectCollide } from "./rect2rect.js";
 
 /**
  *
- * @param {tCircle} circle
- * @param {tPolygon} polygon
+ * @param {tCircle} circle convect polygon 1 with at least 2 points
+ * @param {tPoint[]} polygon convect polygon 2 with at least 2 points
  */
 export const isCircleAndPolygonCollide = (circle, polygon) => {
-  const cBox = getCircleBox(circle);
-  const pBox = getBboxPolygon(polygon);
-  const isBoxCollide = is2RectCollide(cBox, pBox);
-  if (!isBoxCollide) return false;
+  const bbox1 = getCircleBox(circle);
+  const bbox2 = getBboxPolygon(polygon);
 
-  const axis = getAxis(polygon, circle);
-  const circleMinMax = getCircleProjection(circle, axis);
-  const polygonMinMax = getPolygonProjection(polygon, axis);
+  const isBboxCollide = is2RectCollide(bbox1, bbox2);
+  if (!isBboxCollide) return false;
 
-  if (
-    circleMinMax.min > polygonMinMax.max || //
-    polygonMinMax.min > circleMinMax.max
-  ) {
-    return false;
-  } else {
-    return true;
+  const normsAxis = filterAxis(getNormUnits(polygon));
+  const len = normsAxis.length;
+
+  for (let i = 0; i < len; i++) {
+    const axis = normsAxis[i];
+
+    const isCollide = is2PolyCollideByAxis(circle, polygon, axis);
+    if (!isCollide) return false;
   }
+  return true;
 };
 
 /**
@@ -45,25 +43,22 @@ export const getCircleBox = (circle) => {
 };
 
 /**
- *
- * @param {tPolygon} polygon
  * @param {tCircle} circle
+ * @param {tPolygon} poly
+ * @param {tPolygon} projectionAxis
  */
-const getAxis = (polygon, circle) => {
-  let minDistToCenter = getDistance2Point(polygon[0], circle);
-  let axis = getUnit(polygon[0], circle);
-  const len = polygon.length;
+export const is2PolyCollideByAxis = (circle, poly, projectionAxis) => {
+  const p1 = getCircleProjection(circle, projectionAxis);
+  const p2 = getPolygonProjection(poly, projectionAxis);
 
-  for (let i = 1; i < len; i++) {
-    const point = polygon[i];
-    const dist = getDistance2Point(point, circle);
-    if (dist < minDistToCenter) {
-      minDistToCenter = dist;
-
-      axis = getUnit(point, circle);
-    }
+  if (
+    p2.min > p1.max || //
+    p1.min > p2.max
+  ) {
+    return false;
+  } else {
+    return true;
   }
-  return axis;
 };
 
 /**
@@ -78,20 +73,3 @@ export const getCircleProjection = (circle, axis) => {
     max: distCenter + circle.radius,
   };
 };
-
-// const circle = {
-//   x: 11,
-//   y: 11,
-//   radius: 3,
-// };
-// const polygon = [
-//   { x: 2, y: 6 },
-//   { x: 5, y: 3 },
-//   { x: 8, y: 3 },
-//   { x: 11, y: 6 },
-//   { x: 8, y: 9 },
-//   { x: 5, y: 9 },
-// ];
-// const t1 = isCircleAndPolygonCollide(circle, polygon);
-
-// console.log("t1 ", t1);
