@@ -1,4 +1,4 @@
-import { getBoundingClientRect } from "./getBoundingClientRect";
+import { getBoundingClientRect } from "./getBoundingClientRect.js";
 
 export class Round {
   /**
