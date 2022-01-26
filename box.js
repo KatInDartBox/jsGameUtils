@@ -1,4 +1,5 @@
 import { getBoundingClientRect } from "./getBoundingClientRect.js";
+import { getVerticesBbox } from "./getVertices.js";
 
 export class Box {
   /**
@@ -17,5 +18,9 @@ export class Box {
 
   get bbox() {
     return getBoundingClientRect(this.x, this.y, this.width, this.height);
+  }
+  get vertices() {
+    const box = this.bbox;
+    return getVerticesBbox(box);
   }
 }

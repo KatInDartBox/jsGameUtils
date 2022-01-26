@@ -14,6 +14,8 @@ export class Round {
   }
 
   get bbox() {
-    return getBoundingClientRect(this.x - this.radius, this.y - this.radius, this.radius, this.radius);
+    return getBoundingClientRect(this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2);
   }
 }
+const Circle = Round;
+export { Circle };
